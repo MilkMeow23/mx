@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>生日快乐❤️️</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<style>
+*{padding:0;margin:0;box-sizing:border-box}
+body{
+    background:#fff;
+    margin:0 auto;
+    overflow-x:hidden;
+    overflow-y:auto;
+    position: relative;
+    /* IOS禁止微信调整字体大小 */
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+    -moz-text-size-adjust: 100% !important;
+    font-family: "Microsoft YaHei", Arial;
+}
+#div_container{width:100%;max-width:500px;margin:0 auto;position:relative;font-size:1em;z-index:2;}
+#snow-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9}
+.snowflake{position:absolute;top:-10%;background-size:contain;background-repeat:no-repeat;background-position:center;animation:snowfall linear infinite}
+@keyframes snowfall{0%{transform:translateY(0) rotate(0deg);opacity:.9}100%{transform:translateY(110vh) rotate(360deg);opacity:.4}}
+#div_intersect{position:fixed;
+               top:0;left:0;right:0;bottom:0;
+               width:100%;height:100vh;
+               background-size:cover;
+               background-position:center;
+               overflow:hidden;
+               z-index:1;}
+#div_is_inner{position:absolute;top:0;right:0;left:0;bottom:0;width:100%;background:rgba(255,255,255,0.70)}
+.div_is_typed{width:100%;position:absolute;top:0;right:0;left:0;bottom:0;z-index:2;-webkit-overflow-scrolling:touch;padding:10%;overflow-y:auto;display:none;color:#333;font-family:"Microsoft YaHei",Arial}
+#div_is_img{width:100%;max-height:320px;margin:0 0 15px 0;background:#fff;border:15px solid #fff;border-radius:3px}
+#div_is_img img{width:100%;height:13.28rem;}
+#text-view{line-height:1.6;white-space:pre-wrap}
+/* 光标动画 */
+@keyframes text-flicker{0%,49%{opacity:0}50%{opacity:1}}
+.cur-end{animation:text-flicker .8s infinite;margin-left:2px}
+/* 红色跳动爱心样式（打印全程显示） */
+.heart-icon{
+    color: #ff0000 !important;
+    display: inline-block;
+    margin: 0 2px; /* 缩小间距，避免与光标重叠 */
+    animation: heartBeat 1s ease-in-out infinite;
+    font-size: 1.1em; /* 适配文本大小，不突兀 */
+    vertical-align: middle; /* 与文本垂直居中对齐 */
+}
+/* 爱心跳动动画 */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); } /* 缩小放大倍数，更自然 */
+    100% { transform: scale(1); }
+}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;padding-top:45%;color:#fff;font-size:1.2rem;text-align:center}
+.heart{font-size:4.2rem;color:red;animation:heartbeat 1.5s infinite}
+.wechat-notification{display:flex;align-items:center;justify-content:space-between;width:85%;background:rgba(255,255,255,.95);border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.2);padding:15px;font-size:14px;position:relative;animation:slideDownFadeIn 1s ease-out forwards;margin-top:5%;cursor:pointer}
+.notification-content{display:flex;align-items:center;flex-grow:1}
+.notification-content img{width:2.65rem;height:2.65rem;margin-right:10px}
+.notification-content .title{font-weight:bold;font-size:1.08rem;text-align:left;margin-right:auto;color:#555}
+.notification-content .subtitle{text-align:left;font-size:0.83rem;color:#555;margin-top:1px}
+.notification-time{font-size:0.83rem;color:gray;align-self:center;animation:shake .5s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(.95)}50%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}50%{transform:translateX(2px)}75%{transform:translateX(-2px)}}
+@keyframes slideDownFadeIn{0%{transform:translateY(-30px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.music-btn{position:fixed;width:48px;height:48px;border:2px solid #fff;border-radius:50%;font-size:20px;line-height:44px;text-align:center;bottom:60px;right:15px;background:rgba(0,0,0,0.2);z-index:99999;display:block;cursor:pointer;color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;}
+.music-btn:hover{background:rgba(0,0,0,0.4);transform:scale(1.1);}
+
+/* 生日祝福页面样式 */
+#birthday-content {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: #333;
+    overflow-y: auto;
+    z-index: 20;
+    padding: 20px;
+    font-family: "Microsoft YaHei", Arial;
+}
+
+.birthday-container {
+    max-width: 800px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.92);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    position: relative;
+    z-index: 21;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.birthday-title {
+    color: #ff4081;
+    font-size: 3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.birthday-img {
+    max-width: 300px;
+    width: 100%;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.birthday-message {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 20px 0;
+    text-align: left;
+    padding: 20px;
+    background-color: rgba(255, 235, 238, 0.5);
+    border-radius: 10px;
+    min-height: 150px;
+    white-space: pre-line;
+}
+
+.balloons {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.balloon {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    background: #ff4081;
+    border-radius: 50%;
+    bottom: -60px;
+    animation: float 15s infinite ease-in;
+}
+
+.balloon:before {
+    content: "";
+    position: absolute;
+    width: 1px;
+    height: 50px;
+    background: #ff4081;
+    top: 50px;
+    left: 20px;
+}
+
+.balloon:nth-child(2) {
+    left: 20%;
+    background: #4fc3f7;
+    animation-delay: 2s;
+    animation-duration: 12s;
+}
+
+.balloon:nth-child(3) {
+    left: 40%;
+    background: #ffeb3b;
+    animation-delay: 4s;
+    animation-duration: 18s;
+}
+
+.balloon:nth-child(4) {
+    left: 60%;
+    background: #66bb6a;
+    animation-delay: 1s;
+    animation-duration: 14s;
+}
+
+.balloon:nth-child(5) {
+    left: 80%;
+    background: #ba68c8;
+    animation-delay: 3s;
+    animation-duration: 16s;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0);
+    }
+    100% {
+        transform: translateY(-100vh) rotate(20deg);
+    }
+}
+
+.birthday-heart {
+    color: #ff4081;
+    animation: heartbeat 1.5s ease-in-out infinite both;
+    display: inline-block;
+}
+
+@keyframes heartbeat {
+    from {
+        transform: scale(1);
+        transform-origin: center center;
+        animation-timing-function: ease-out;
+    }
+    10% {
+        transform: scale(0.91);
+        animation-timing-function: ease-in;
+    }
+    17% {
+        transform: scale(0.98);
+        animation-timing-function: ease-out;
+    }
+    33% {
+        transform: scale(0.87);
+        animation-timing-function: ease-in;
+    }
+    45% {
+        transform: scale(1);
+        animation-timing-function: ease-out;
+    }
+}
+
+@media (max-width: 600px) {
+    .birthday-title {
+        font-size: 2.2rem;
+    }
+    
+    .birthday-container {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+<body>
+<!-- 微信通知界面 -->
+<div id="snow-container"></div>
+<div id="div_intersect" style="background-image: url('static/picture/1.jpg')">
+  <div id="div_is_inner">
+    <div class="overlay" id="openBtn">
+      <div class="heart">💬</div>
+      <div class="wechat-notification" id="wechat-notification">
+        <div class="notification-content">
+          <img src="https://youke1.picui.cn/s1/2025/10/27/68fe763801bd8.png" alt="微信图标">
+          <div>
+            <div class="title">新消息通知</div>
+            <div class="subtitle">对方发来一条重要消息！</div>
+          </div>
+        </div>
+        <div class="notification-time">点击<br>签收</div>
+      </div>
+    </div>
+    <div class="div_is_typed" id="div_is_typed">
+      <div id="div_is_img">
+        <img src="static/picture/3.gif">
+      </div>
+      <div id="text-source" style="display: none">Happy Birthday！
+
+～Happy Birthday～
+
+又长大一岁啦，
+
+🐷 你开心每一天 运气爆棚
+
+活出自己想要的样子
+</div>
+      <div id="text-view"></div>
+    </div>
+  </div>
+</div>
+<div id="div_container">
+</div>
+<div class="music-btn" id="music-btn">♪</div>
+
+<!-- 生日祝福页面 -->
+<div id="birthday-content">
+    <div class="balloons">
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+        <div class="balloon"></div>
+    </div>
+    
+    <div class="birthday-container">
+        <h1 class="birthday-title">生日快乐 <span class="birthday-heart">❤️</span></h1>
+        
+        <img src="https://youke1.picui.cn/s1/2025/10/27/68fe7146e66dd.jpg" alt="生日祝福" class="birthday-img">
+        
+        <div class="birthday-message" id="birthday-message">
+            <!-- 消息将通过JavaScript动态显示 -->
+        </div>
+        
+        <p style="margin-top: 20px; font-style: italic;">祝您拥有最美好的一天！</p>
+    </div>
+</div>
+
+<!-- 音乐元素 -->
+<audio id="birthday-music" preload="auto">
+    <!-- 使用您提供的音乐链接 -->
+    <source src="https://m801.music.126.net/20251027035727/fe058b0ba0146752fff7c264036ac9be/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/28481983069/0868/fa07/16a7/d6b67ce1e4eeab4ea3c525837ba2cb7c.mp3" type="audio/mpeg">
+    您的浏览器不支持音频元素。
+</audio>
+
+<script>
+// 创建雪花效果
+function createSnowflakes() {
+  const snowContainer = document.getElementById('snow-container');
+  snowContainer.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    const randomImgIndex = Math.floor(Math.random() * 4) + 1;
+    const imgPath = `static/picture/00${randomImgIndex}.png`;
+    const size = 12 + Math.random() * 22;
+    const left = Math.random() * 100;
+    const duration = 2 + Math.random() * 5;
+    const delay = Math.random() * 6;
+    snowflake.style.width = `${size}px`;
+    snowflake.style.height = `${size}px`;
+    snowflake.style.left = `${left}%`;
+    snowflake.style.backgroundImage = `url('${imgPath}')`;
+    snowflake.style.animationDuration = `${duration}s`;
+    snowflake.style.animationDelay = `${delay}s`;
+    snowContainer.appendChild(snowflake);
+  }
+}
+
+// 打字机效果显示祝福语
+function typeWriter(text, element, speed = 50) {
+    let i = 0;
+    element.innerHTML = '';
+    
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    
+    typing();
+}
+
+// 音乐控制功能
+function initMusicControl() {
+    const audio = document.getElementById('birthday-music');
+    const musicBtn = document.getElementById('music-btn');
+    let isPlaying = false;
+    
+    // 设置音乐从1:05开始播放
+    audio.currentTime = 65;
+    
+    // 点击音乐按钮切换播放/暂停
+    musicBtn.addEventListener('click', function() {
+        if (isPlaying) {
+            audio.pause();
+            musicBtn.textContent = '♪';
+            isPlaying = false;
+        } else {
+            audio.play().catch(e => {
+                console.log("音频播放失败:", e);
+                alert("音乐播放需要用户交互，请先点击页面任意位置");
+            });
+            musicBtn.textContent = '❚❚';
+            isPlaying = true;
+        }
+    });
+    
+    // 音频播放结束时重置按钮状态
+    audio.addEventListener('ended', function() {
+        musicBtn.textContent = '♪';
+        isPlaying = false;
+    });
+    
+    // 返回音频对象以便在其他地方使用
+    return audio;
+}
+
+function initMoreBtnLink() {
+  const moreLink = document.querySelector('.more-btn a');
+  fetch('../domain.php')
+    .then(response => {
+      if (!response.ok) throw new Error(`请求失败：${response.status}（检查domain.php路径是否正确）`);
+      return response.json();
+    })
+    .then(data => {
+      if (data && data.success && typeof data.domain === 'string' && data.domain.trim()) {
+        moreLink.href = data.domain.trim();
+        console.log('更多按钮链接加载成功：', data.domain);
+      } else {
+        console.log('更多按钮链接格式错误：后端返回数据不完整');
+      }
+    })
+    .catch(err => {
+      console.log('更多按钮链接获取失败：', err.message);
+    });
+}
+
+window.onload = function() {
+  const card = document.getElementById('wechat-notification');
+  initMoreBtnLink();
+
+  if (card) {
+    card.addEventListener('click', function() {
+      // 立即显示生日祝福页面
+      document.getElementById('openBtn').style.display = 'none';
+      document.getElementById('birthday-content').style.display = 'block';
+      document.getElementById('snow-container').style.zIndex = 3;
+      
+      // 初始化音乐控制
+      const audio = initMusicControl();
+      
+      // 显示祝福消息
+      const message = "亲爱的朋友，\n\n在这个特别的日子里，我想送上最真挚的祝福！愿你的每一天都充满阳光、快乐和爱。\n\n愿你的所有梦想都能实现，所有的希望都能如愿，所有的付出都能收获。\n\n生日快乐！";
+      typeWriter(message, document.getElementById('birthday-message'), 30);
+      
+      // 延迟创建雪花效果，提高响应速度
+      setTimeout(createSnowflakes, 100);
+      
+      // 尝试自动播放音乐
+      setTimeout(() => {
+        audio.play().catch(e => {
+          console.log("自动播放被阻止，需要用户交互");
+          // 如果自动播放失败，提示用户点击音乐按钮
+        });
+      }, 500);
+    });
+  } else {
+    console.log('错误：未找到"微信通知卡片"（检查ID是否正确）');
+  }
+};
+</script>
+</body>
+</html>
